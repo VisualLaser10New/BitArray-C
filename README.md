@@ -18,7 +18,10 @@ The ArrayBit indexing is Zero based, instead the BitArray length is One based.
    ```
    
 ## Functions
-* ### allocBit ``` BitArray allocBit(BitArray bitArray, unsigned int nBitInc, size_t LengthNow, Bool isInitialized);  ```
+* ### allocBit
+  ```c
+  BitArray allocBit(BitArray bitArray, unsigned int nBitInc, size_t LengthNow, Bool isInitialized);
+  ```
   To allocate in memory a specified number of Bit so create a BitArray, or to increase a pre-sized BitArray; use the allocBit function:
   ```c
   bitArray = allocBit(bitArray, numBit, LengthNow, initialized);
@@ -30,7 +33,10 @@ The ArrayBit indexing is Zero based, instead the BitArray length is One based.
   * initialized is a bool type where true is **True** and false is **False**, set it true if the BitArray is already initialized
 
 
-* ### setBit ``` int setBit(BitArray bitArray, unsigned int Pos, unsigned char Value); ```
+* ### setBit
+  ```c
+  int setBit(BitArray bitArray, unsigned int Pos, unsigned char Value);
+  ```
   To set a bit in a specified position in the BitArray use setBit function:
   ```c
   setBit(bitArray, position, Value);
@@ -40,7 +46,10 @@ The ArrayBit indexing is Zero based, instead the BitArray length is One based.
   * Value is binary digit to set into this bit
   
   
-* ### getBit ``` unsigned char getBit(BitArray bitArray, unsigned int Pos); ```
+* ### getBit
+  ```c
+  unsigned char getBit(BitArray bitArray, unsigned int Pos);
+  ```
   This function return the bit at the specified position:
   ```c
   getBit(bitArray, position);
@@ -49,7 +58,10 @@ The ArrayBit indexing is Zero based, instead the BitArray length is One based.
   * position is the index of the bit to get
  
  
-* ### printBitArr ``` void printBitArr(BitArray bitArray, size_t Length); ```
+* ### printBitArr
+  ```c
+  void printBitArr(BitArray bitArray, size_t Length);
+  ```
   To print the BitArray on the console, to make more readable the array, it is print inversely: the first printed bit is the MSB.
   ```c
   printBitArr(bitArray, length);
@@ -58,7 +70,10 @@ The ArrayBit indexing is Zero based, instead the BitArray length is One based.
   * length it's the number of bits to be printed
   
   
-* ### burstBit ``` void burstBit(BitArray bitArray, unsigned int fromPos, unsigned int toPos, unsigned char Value); ```
+* ### burstBit
+  ```c
+  void burstBit(BitArray bitArray, unsigned int fromPos, unsigned int toPos, unsigned char Value);
+  ```
   Make a bit burst on BitArray.
   ```c
   burstBit(bitArray, fromPosition, toPosition, Value);
@@ -69,7 +84,10 @@ The ArrayBit indexing is Zero based, instead the BitArray length is One based.
   * Value is binary digit to set in all of the burst
 
 
-* ### arrBitArr ``` void arrBitArr(BitArray bitArray, unsigned int arr[], size_t arrLength, unsigned char Values[]); ```
+* ### arrBitArr
+  ```c
+  void arrBitArr(BitArray bitArray, unsigned int arr[], size_t arrLength, unsigned char Values[]);
+  ```
   Set multiple bits on specified positions.
   ```c
   arrBitArr(bitArray, positionsArray, lengthPosArr, valuesArray);
@@ -78,3 +96,13 @@ The ArrayBit indexing is Zero based, instead the BitArray length is One based.
   * positionsArray is an integer array, that contains the indexes of bits to change
   * lengthPosArr specific what is the length of positionsArray, the number is 1 based
   * valuesArray is a parallel array of positionsArray, that contains the values to apply at specified indexes in the array: positionsArray
+
+## Example
+```c
+#include <stdio.h>
+#include "BitArray.c"
+
+void main() {
+   BitArray bitArray;
+}
+```
