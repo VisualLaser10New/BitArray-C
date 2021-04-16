@@ -106,16 +106,19 @@ void main() {
    size_t size = 4;                                // you can see this as bit or as byte (in case you define it as number of bit it will resized with the minimum number of byte
    BitArray bitArray;
    
+   int arrIndexes[] = {0, 3};
+   char arrValues[] = {0, 0};
+   
    bitArray = allocBit(bitArray, size, 0, False);  // initialize the array of bit
    
    setBit(bitArray, 0, 1);                         // set the first bit to 1
    
-   printf("%d", getBit(bitArray, 0));              // 1
+   printf("%d\n", getBit(bitArray, 0));            // 1
    
    printBitArr(bitArray, size);                    // 0001
    
    burstBit(bitArray, 1, 3, 1);                    // 1111
    
-   arrBitArr(bitArray, {0, 3}, , {0, 0});          // 0110
+   arrBitArr(bitArray, arrIndexes, 2, arrValues);  // 0110
 }
 ```
