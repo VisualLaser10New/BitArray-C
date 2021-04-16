@@ -103,6 +103,19 @@ The ArrayBit indexing is Zero based, instead the BitArray length is One based.
 #include "BitArray.c"
 
 void main() {
+   size_t size = 4;                                // you can see this as bit or as byte (in case you define it as number of bit it will resized with the minimum number of byte
    BitArray bitArray;
+   
+   bitArray = allocBit(bitArray, size, 0, False);  // initialize the array of bit
+   
+   setBit(bitArray, 0, 1);                         // set the first bit to 1
+   
+   printf("%d", getBit(bitArray, 0));              // 1
+   
+   printBitArr(bitArray, size);                    // 0001
+   
+   burstBit(bitArray, 1, 3, 1);                    // 1111
+   
+   arrBitArr(bitArray, {0, 3}, , {0, 0});          // 0110
 }
 ```
