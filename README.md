@@ -60,14 +60,15 @@ The ArrayBit indexing is Zero based, instead the BitArray length is One based.
  
 * ### printBitArr
   ```c
-  void printBitArr(BitArray bitArray, size_t Length);
+  void printBitArr(BitArray bitArray, size_t Length, unsigned int RtL);
   ```
-  To print the BitArray on the console, to make more readable the array, it is print inversely: the first printed bit is the MSB.
+  To print the BitArray on the console, to make more readable the array, based on RtL it's printed in one way or another.
   ```c
   printBitArr(bitArray, length);
   ```
   * bitArray is name of BitArray
   * length it's the number of bits to be printed
+  * RtL it's the mode of print (0 = print from LSB to MSB, 1 = print from MSB to LSB)
   
   
 * ### burstBit
@@ -97,6 +98,21 @@ The ArrayBit indexing is Zero based, instead the BitArray length is One based.
   * lengthPosArr specific what is the length of positionsArray, the number is 1 based
   * valuesArray is a parallel array of positionsArray, that contains the values to apply at specified indexes in the array: positionsArray
 
+
+* ### cpyBit
+  ```c
+  void cpyBit(BitArray destination, BitArray source, size_t fromPos, size_t toPos);
+  ```
+  Copy the bit in the bitArray from pos x to pos y in destination array.
+  ```c
+  arrBitArr(destination, bitArray, fromPos, toPos);
+  ```
+  * destination is the name of the BitArrai where the bit are copyed
+  * bitArray is the array containing the bit to be copied
+  * fromPos is the position where the copy starts (it's included in the copy)
+  * toPos is the position where the copy finish (it's included in the copy)
+
+
 ## Example
 ```c
 #include <stdio.h>
@@ -115,7 +131,7 @@ void main() {
    
    printf("%d\n", getBit(bitArray, 0));            // 1
    
-   printBitArr(bitArray, size);                    // 0001
+   printBitArr(bitArray, size, 0);                 // 0001
    
    burstBit(bitArray, 1, 3, 1);                    // 1111
    
