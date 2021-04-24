@@ -50,7 +50,9 @@ typedef enum
 /*************************** STANDARD FUNCTION ******************************/
 
 //SET THE BIT
-int setBit(BitArray bitArray, unsigned int Pos, unsigned char Value )
+#define setBit(...) _setBit(__VA_ARGS__, 1)
+#define _setBit(bitArray, Pos, Value, ...) setBit(bitArray, Pos, Value)
+int (setBit)(BitArray bitArray, unsigned int Pos, unsigned char Value )
 {
 	unsigned int bytePos = (unsigned)(floor((float)Pos/8.0));	//number of byte to access the value
 	unsigned int realPos = (unsigned)(Pos%8);			   	 	//position of bit inside the byte
@@ -81,7 +83,9 @@ unsigned char getBit(BitArray bitArray, unsigned int Pos)
 
 
 //ALLOC AND REALLOC
-BitArray allocBit(BitArray bitArray, unsigned int nBitInc, unsigned int LengthNow, Bool isInitialized) {
+#define allocBit(...) _allocBit(__VA_ARGS__, True)
+#define _allocBit(bitArray, nBitInc, LengthNow, isInitialized, ...) allocBit(bitArray, nBitInc, LengthNow, isInitialized)
+BitArray (allocBit)(BitArray bitArray, unsigned int nBitInc, unsigned int LengthNow, Bool isInitialized) {
 	BitArray tmp;
 	size_t n_byte = ((size_t)ceil((float)nBitInc/8.0));			//number of byte
 	size_t n_byteNow = ((size_t)ceil((float)LengthNow/8.0));	//number of byte Now
@@ -111,7 +115,9 @@ BitArray allocBit(BitArray bitArray, unsigned int nBitInc, unsigned int LengthNo
 /**************************** EXTENDED FUNCTION *******************************/
 
 //PRINT BITS
-void printBitArr(BitArray bitArray, size_t Length, Bool RtL, const char* stringAtEnd)
+#define printBitArr(...) _printBitArr(__VA_ARGS__, True, "\n")
+#define _printBitArr(bitArray, Length, RtL, stringAtEnd, ...) printBitArr(bitArray, Length, RtL, stringAtEnd)
+void (printBitArr)(BitArray bitArray, size_t Length, Bool RtL, const char* stringAtEnd)
 {
 	if(RtL)
 	{
@@ -133,7 +139,9 @@ void printBitArr(BitArray bitArray, size_t Length, Bool RtL, const char* stringA
 
 
 //SET BURST BITS
-void burstBit(BitArray bitArray, unsigned int fromPos, unsigned int toPos, unsigned char Value)
+#define burstBit(...) _burstBit(__VA_ARGS__, 1)
+#define _burstBit(bitArray, fromPos, toPos, Value, ...) burstBit(bitArray, fromPos, toPos, Value)
+void (burstBit)(BitArray bitArray, unsigned int fromPos, unsigned int toPos, unsigned char Value)
 {
 	//the position specified are included in the change
 	for(unsigned int i = fromPos; i <= toPos; ++i)
