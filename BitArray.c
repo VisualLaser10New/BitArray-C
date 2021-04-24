@@ -7,37 +7,39 @@
 *	Copyright Visual Laser 10 New
 *
 *	Release: 1.1.1 - 04/2021
+*
+*	DESCRIPTION:
+*		library that introduce a "new" type that contains bits
+*		to edit the bit-fields are used bit-masks
+* 
+*		it uses dynamic allocation
+*		Variable type BitArray: unsigned char*
+* 
+*		The ArrayBit indexing is Zero based, instead the BitArray length is One based
 */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 
 
-/*
-* DESCRIPTION:
-* Used bit-masks to edit bif fields
-* Used u_char to contain the bits
-* 
-* Dynamic allocation
-* Variable type BitArray: unsigned char*
-* 
-* The ArrayBit indexing is Zero based, instead the BitArray length is One based
-*/
-
 #define SIZE sizeof(char)
 
 
-/***************************** GLOBAL VARIABLE *****************************/
-typedef unsigned char* BitArray; 								//type of Array bits
 
-typedef enum
+/***************************** GLOBAL VARIABLE *****************************/
+typedef unsigned char* BitArray; // definition of the type of the BitArray
+
+
+typedef enum // simulate the use of a Bool variable
 {
 	False,
 	True
 }Bool;
 
-typedef enum
+
+typedef enum // used to distinguish different logic operations
 {
 	And,
 	Or,
@@ -47,13 +49,15 @@ typedef enum
 	Xnor
 }LogicSign;
 
-typedef enum
+
+typedef enum // used to distinguish different base operation
 {
 	Bin,
 	Dec,
 	Oct,
 	Hex
 }BaseType;
+
 
 union
 {
@@ -62,15 +66,16 @@ union
 }Share;
 
 
+
 /*************************** STANDARD FUNCTION ******************************/
 
-//SET THE BIT
+//SET 1 BIT
 #define setBit(...) _setBit(__VA_ARGS__, 1)
 #define _setBit(bitArray, Pos, Value, ...) setBit(bitArray, Pos, Value)
 int (setBit)(BitArray bitArray, unsigned int Pos, unsigned char Value )
 {
-	unsigned int bytePos = (unsigned)(floor((float)Pos/8.0));	//number of byte to access the value
-	unsigned int realPos = (unsigned)(Pos%8);			   	 	//position of bit inside the byte
+	unsigned int bytePos = (unsigned)(floor((float)Pos/8.0)); // number of byte to access the value
+	unsigned int realPos = (unsigned)(Pos%8); // position of bit inside the byte
 	
 	if(Value)
 	{
@@ -86,11 +91,11 @@ int (setBit)(BitArray bitArray, unsigned int Pos, unsigned char Value )
 }
 
 
-//GET THE BIT
+//GET 1 BIT
 unsigned char getBit(BitArray bitArray, unsigned int Pos)
 {
-	unsigned int bytePos = (unsigned)(floor((float)Pos/8.0));	//number of byte to access the value
-	unsigned int realPos = (unsigned)(Pos%8);		       	 	//position of bit inside the byte
+	unsigned int bytePos = (unsigned)(floor((float)Pos/8.0)); // number of byte to access the value
+	unsigned int realPos = (unsigned)(Pos%8); // position of bit inside the byte
 
 
 	return ((bitArray[bytePos]&(1<<realPos))>>realPos);
@@ -102,8 +107,8 @@ unsigned char getBit(BitArray bitArray, unsigned int Pos)
 #define _allocBit(bitArray, nBitInc, LengthNow, isInitialized, ...) allocBit(bitArray, nBitInc, LengthNow, isInitialized)
 BitArray (allocBit)(BitArray bitArray, unsigned int nBitInc, unsigned int LengthNow, Bool isInitialized) {
 	BitArray tmp;
-	size_t n_byte = ((size_t)ceil((float)nBitInc/8.0));			//number of byte
-	size_t n_byteNow = ((size_t)ceil((float)LengthNow/8.0));	//number of byte Now
+	size_t n_byte = ((size_t)ceil((float)nBitInc/8.0)); // number of total byte (the bit to add are included)
+	size_t n_byteNow = ((size_t)ceil((float)LengthNow/8.0)); // number of byte of the passed variable (the bit to add are excluded)
 	
 	if(!isInitialized) {
 		bitArray = (BitArray)malloc(SIZE);		
@@ -127,9 +132,10 @@ BitArray (allocBit)(BitArray bitArray, unsigned int nBitInc, unsigned int Length
 }
 
 
+
 /**************************** EXTENDED FUNCTION *******************************/
 
-//PRINT BITS
+//PRINT THE PASSED BITS
 #define printBitArr(...) _printBitArr(__VA_ARGS__, True, "\n")
 #define _printBitArr(bitArray, Length, RtL, stringAtEnd, ...) printBitArr(bitArray, Length, RtL, stringAtEnd)
 void (printBitArr)(BitArray bitArray, size_t Length, Bool RtL, const char* stringAtEnd)
@@ -166,7 +172,7 @@ void (burstBit)(BitArray bitArray, unsigned int fromPos, unsigned int toPos, uns
 }
 
 
-//BASED ON ARRAY[] SET MULTIPLE POSITION IN BITARRAY
+//BASED ON ARRAY[] SET MULTIPLE POSITION IN BITARRAY ON THE PASSED VALUES
 void arrBitArr(BitArray bitArray, unsigned int arr[], size_t arrLength, unsigned char Values[])
 {
 	for(unsigned int i=0; i < arrLength; ++i)
@@ -187,28 +193,32 @@ void cpyBit(BitArray destination, BitArray source, size_t fromPos, size_t toPos)
 }
 
 
+
 /**************************** LOGICAL FUNCTION *******************************/
 /*
-linear bitwise operations 001 & -> 0&0&1 -> 0
+	TODO: linear bitwise operations 001 & -> 0&0&1 -> 0
 */
+
 
 //DO THE SHIFT OPERATION
 void shiftBitArr(BitArray destination, BitArray source, size_t shiftNum, size_t Length, Bool RtL)
 {
-	size_t j, i;												//i seeks the bit to replace in position j
-	unsigned int frP, toP;										//the begin and the end of burst
+	size_t j, i; // i seeks the bit to replace in position j
+	unsigned int frP, toP; // the begin and the end of burst
 	
+	// True -> shift to the right >>
+	// False -> shift to the left <<
 	if(RtL)
 	{
 		j = 0;
 		i = shiftNum;
 		
-		frP = (unsigned) (Length - shiftNum - 1);				//-1 is for the zero based
+		frP = (unsigned) (Length - shiftNum - 1); // -1 is for the zero based
 		toP = (unsigned) (Length - 1);
 		
-		for(; j<Length; ++i, ++j)
+		for(; j < Length; ++i, ++j)
 		{
-			setBit(destination, j, getBit(source, i));			//shift the bits
+			setBit(destination, j, getBit(source, i)); // shift the bits
 		}
 	}
 	else
@@ -221,15 +231,15 @@ void shiftBitArr(BitArray destination, BitArray source, size_t shiftNum, size_t 
 		
 		for(; i>0; --i, --j)
 		{
-			setBit(destination, j, getBit(source, i));			//shift the bits
+			setBit(destination, j, getBit(source, i)); // shift the bits
 		}
 	}
 	
-	burstBit(destination, frP, toP, 0);							//set the padding bits
+	burstBit(destination, frP, toP, 0); // set the "padding" bits
 }
 
 
-//DO BITtoBIT OPERATIONS
+//DO BIT to BIT OPERATIONS
 void logicBit(BitArray op1, BitArray op2, BitArray result, size_t *op1Length,  size_t *op2Length,  size_t *resLength, LogicSign sign)
 {
 	size_t i;
@@ -249,11 +259,10 @@ void logicBit(BitArray op1, BitArray op2, BitArray result, size_t *op1Length,  s
 	}
 															
 	if(*resLength < max) {
-	  	result = allocBit(result, max, 0, False);				//reset all bit to 0
+	  	result = allocBit(result, max, 0, False); // reset all bit to 0
 	    *resLength = max;
 	}
 
-	
 	//start bool operations
 	if(sign == And)									
 	{
@@ -300,16 +309,15 @@ void logicBit(BitArray op1, BitArray op2, BitArray result, size_t *op1Length,  s
 }
 
 
-//DO CA1 BITWISE
+//DO BITWISE CA1
 void ca1Bit(BitArray destination, BitArray source, size_t *destLength, size_t sourceLength)
 {
-  	size_t n_byte = ((size_t)ceil((float)sourceLength/8.0));			//number of byte
+  	size_t n_byte = ((size_t)ceil((float)sourceLength/8.0)); // number of byte
 	if(sourceLength > *destLength)
     {
     	destination = allocBit(destination, *destLength, 0, False);
     	*destLength = sourceLength;
     }
-	
 	
   	for(size_t i = 0; i < n_byte; ++i)
   	{
@@ -318,17 +326,18 @@ void ca1Bit(BitArray destination, BitArray source, size_t *destLength, size_t so
 }
 
 
+
 /**************************** BASES FUNCTION *******************************/
 /*
-->in dec //1001 -> 9
-->in dec (base transcript) //1001 -> milleuno
-->from int
-->to string: in bin, in dec, in oct, in hex (base conversion) //1001 -> 9
-->from dec or floating to bitarray
+->in dec //1001 -> 9	DONE
+->in dec (base transcript) //1001 -> milleuno	DONE
+->from int	DONE
+->to string: in bin, in dec, in oct, in hex (base conversion) //1001 -> 9	DONE
+->from dec or floating to bitarray	DONE
 */
 
 
-//CONVERT THE BIT ARRAY TO INT, BASE BIN TO DEC
+//CONVERT THE BIT ARRAY TO INT (BASE BIN TO DEC)
 long long unsigned baseExportBit(BitArray bitArray, size_t Length)
 {
 	long long unsigned int output = 0;
@@ -340,7 +349,7 @@ long long unsigned baseExportBit(BitArray bitArray, size_t Length)
 }
 
 
-//TRANSCRIPT THE BITARRAY TO INT, 1001(2) -> 1001(10)
+//TRANSCRIPT THE BITARRAY TO INT (1001(2) -> 1001(10))
 long long unsigned baseTranscBit(BitArray bitArray, size_t Length)
 {
 	long long unsigned int output = 0;
@@ -352,7 +361,7 @@ long long unsigned baseTranscBit(BitArray bitArray, size_t Length)
 }
 
 
-//CONVERT INT NUMBER TO BITARRAY, BASE 10 TO BASE 2
+//CONVERT INT NUMBER TO BITARRAY (BASE 10 TO BASE 2)
 void baseImportBit(BitArray bitArray, long long unsigned int input, size_t *Length)
 {
 	size_t n_byteNow = ((size_t)ceil((float)*Length/8.0));
@@ -444,7 +453,7 @@ unsigned (charfromBit)(BitArray bitArray, char output[], size_t Length, BaseType
 }
 
 
-//TRANSFORM INT OR FLOAT TO BITARRAY, EXTRACT THE ENCODED NUMBER -> SET INTO ARRAY
+//TRANSFORM INT OR FLOAT TO BITARRAY (EXTRACT THE BIT OF THE PASSED NUMBER)
 void n32ImportBit(BitArray bitArray, float input, size_t *Length, Bool isFloat)
 {
 	if(*Length < 32)
