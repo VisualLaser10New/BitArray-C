@@ -6,10 +6,11 @@
 *	
 *	Copyright Visual Laser 10 New
 *
-*	Release: 1.1.0 - 04/2021
+*	Release: 1.1.1 - 04/2021
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 
@@ -45,6 +46,20 @@ typedef enum
 	Nor,
 	Xnor
 }LogicSign;
+
+typedef enum
+{
+	Bin,
+	Dec,
+	Oct,
+	Hex
+}BaseType;
+
+union
+{
+	int int32;
+	float float32;
+}Share;
 
 
 /*************************** STANDARD FUNCTION ******************************/
@@ -173,6 +188,9 @@ void cpyBit(BitArray destination, BitArray source, size_t fromPos, size_t toPos)
 
 
 /**************************** LOGICAL FUNCTION *******************************/
+/*
+linear bitwise operations 001 & -> 0&0&1 -> 0
+*/
 
 //DO THE SHIFT OPERATION
 void shiftBitArr(BitArray destination, BitArray source, size_t shiftNum, size_t Length, Bool RtL)
@@ -302,8 +320,148 @@ void ca1Bit(BitArray destination, BitArray source, size_t *destLength, size_t so
 
 /**************************** BASES FUNCTION *******************************/
 /*
-->in dec, in oct, in hex (base conversion) //1001 -> 9
+->in dec //1001 -> 9
 ->in dec (base transcript) //1001 -> milleuno
-->from dec, from oct, from hex
-->to string
+->from int
+->to string: in bin, in dec, in oct, in hex (base conversion) //1001 -> 9
+->from dec or floating to bitarray
 */
+
+
+//CONVERT THE BIT ARRAY TO INT, BASE BIN TO DEC
+long long unsigned baseExportBit(BitArray bitArray, size_t Length)
+{
+	long long unsigned int output = 0;
+	for(size_t i = 0; i < Length; i++)
+	{
+		(output) += getBit(bitArray, i) * (1<<i);
+	}
+	return output;
+}
+
+
+//TRANSCRIPT THE BITARRAY TO INT, 1001(2) -> 1001(10)
+long long unsigned baseTranscBit(BitArray bitArray, size_t Length)
+{
+	long long unsigned int output = 0;
+	for(size_t i = 0; i<Length; i++)
+	{
+		(output) += getBit(bitArray, i) * pow(10,i);
+	}
+	return output;
+}
+
+
+//CONVERT INT NUMBER TO BITARRAY, BASE 10 TO BASE 2
+void baseImportBit(BitArray bitArray, long long unsigned int input, size_t *Length)
+{
+	size_t n_byteNow = ((size_t)ceil((float)*Length/8.0));
+	size_t n_bitNeed = ((size_t)(floor(log2((float)abs(input))+1)));
+	unsigned i = 0;
+
+
+	if(n_byteNow*8 < n_bitNeed)
+	{
+		bitArray = allocBit(bitArray, n_bitNeed, *Length, True);
+		*Length = n_bitNeed;
+	}
+	
+	
+	while(input)
+	{
+		setBit(bitArray, i, (unsigned)(input&1));
+		input>>=1;
+		++i;
+	}
+}
+
+
+//TRANSOFRM THE BITARRAY TO CHAR ARRAY WITH CHOOSEN BASE (BIN, DEC, OCT, HEX)
+#define charfromBit(...) _charfromBit(__VA_ARGS__, Dec)
+#define _charfromBit(bitArray, output, Length, base, ...) charfromBit(bitArray, output, Length, base)
+unsigned (charfromBit)(BitArray bitArray, char output[], size_t Length, BaseType base)
+{
+	size_t i;
+	size_t end;
+	char tmp;
+	
+	if(base == Bin)
+	{
+		size_t j;
+		for(i = 0, j = Length-1; i < Length; ++i, --j)
+		{
+			output[j] = getBit(bitArray, i) + '0';
+		}
+	}
+	else if(base == Dec)
+	{
+		long long unsigned num = baseExportBit(bitArray, Length);
+		i = 0;
+		while(num)
+		{
+			output[i] = (num % 10) + '0';
+			num /= 10;
+			++i;
+		}
+	}
+	else if(base == Oct)
+	{
+		long long unsigned num = baseExportBit(bitArray, Length);
+		i = 0;
+		while(num)
+		{
+			output[i] = (num % 8) + '0';
+			num /= 8;
+			++i;
+		}
+	}
+	else if(base == Hex)
+	{
+		long long unsigned num = baseExportBit(bitArray, Length);
+		unsigned a = 0;
+		i = 0;
+		while(num)
+		{
+			a = num % 16;
+			output[i] = a + ((a<10)?'0':('A' - 0xA));
+			num /= 16;
+			++i;
+		}
+	}
+	output[++i]='\0';
+	
+	
+	if(base != Bin)
+	{
+		end = strlen(output)-1;
+	
+		for(i=0; i < end; i++){
+			tmp = output[end-i];
+			output[end-i] = output[i];
+			output[i] = tmp;
+		}
+	}	
+}
+
+
+//TRANSFORM INT OR FLOAT TO BITARRAY, EXTRACT THE ENCODED NUMBER -> SET INTO ARRAY
+void n32ImportBit(BitArray bitArray, float input, size_t *Length, Bool isFloat)
+{
+	if(*Length < 32)
+	{
+		bitArray = allocBit(bitArray, 32, *Length, True);
+		*Length = 32;
+	}
+	
+	
+	if(isFloat)
+	{
+		Share.float32 = input;
+	}
+	else
+	{
+		Share.int32 = (int)input;
+	}
+
+	baseImportBit(bitArray, Share.int32, Length);
+}
