@@ -247,7 +247,7 @@ void logicBit(BitArray op1, BitArray op2, BitArray result, size_t *op1Length,  s
 		op2 = allocBit(op2, max, *op2Length,True);
   		*op2Length = max;
 	}
-															
+													
 	if(*resLength < max) {
 	  	result = allocBit(result, max, 0, False);				//reset all bit to 0
 	    *resLength = max;
@@ -317,6 +317,61 @@ void ca1Bit(BitArray destination, BitArray source, size_t *destLength, size_t so
   	}
 }
 
+
+//LINEAR LOGIC OPERATIONS
+unsigned linearLogicBit(BitArray bitArray, size_t Length, LogicSign sign)
+{
+	size_t i;
+	unsigned output = getBit(bitArray,0);
+	
+	if(sign == And)									
+	{
+		for(i=1; i < Length; ++i)
+		{
+	     	output &= getBit(bitArray,i);
+		}
+	}
+	else if(sign == Or)
+	{
+		for(i=1; i < Length; ++i)
+		{
+	     	output |= getBit(bitArray,i);
+		}
+	}
+	else if(sign == Xor)
+	{
+		for(i=1; i < Length; ++i)
+	    {
+	     	output ^= getBit(bitArray,i);
+	    }
+	}
+	else if(sign == Nand)
+	{
+		for(i=1; i < Length; ++i)
+	    {
+	     	output &= getBit(bitArray,i);
+	     	output = !output;
+	    }
+	}
+	else if(sign == Nor)
+	{
+		for(i=1; i < Length; ++i)
+	    {
+	     	output |= getBit(bitArray,i);
+	     	output = !output;
+	    }
+	}
+	else if(sign == Xnor)
+	{
+		for(i=1; i < Length; ++i)
+	    {
+	     	output ^= getBit(bitArray,i);
+	     	output = !output;
+	    }
+	}
+	
+	return output;
+}
 
 /**************************** BASES FUNCTION *******************************/
 /*
