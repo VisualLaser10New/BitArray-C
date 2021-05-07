@@ -6,7 +6,7 @@
 *	
 *	Copyright Visual Laser 10 New
 *
-*	Release: 1.1.1 - 04/2021
+*	Release: 1.0.0.1 - 04/2021
 *
 *	DESCRIPTION:
 *		library that introduce a "new" type that contains bits
@@ -186,10 +186,75 @@ void arrBitArr(BitArray bitArray, unsigned int arr[], size_t arrLength, unsigned
 void cpyBit(BitArray destination, BitArray source, size_t fromPos, size_t toPos)
 {
 	size_t j = 0;
-	for(size_t i=fromPos; i <= toPos; i++, j++)
-	{		
+	for(size_t i=fromPos; i <= toPos; ++i, ++j)
+	{
 		setBit(destination, j, getBit(source, i));
 	}
+}
+
+
+//INVERT THE SOURCE BITARRAY IN DESTINATION BITARRAY
+void invBit(BitArray destination, BitArray source, size_t *destinationLength, size_t sourceLength)
+{
+	*destinationLength = sourceLength;
+	destination = allocBit(destination, *destinationLength, 0, True);
+	
+	unsigned temp = 0;
+	
+	for(size_t i = 0, j = *destinationLength - 1; i < (int)sourceLength/2; ++i, --j)
+	{
+		temp = getBit(source, j);
+		
+		setBit(destination, j, getBit(source, i));
+		setBit(destination, i, temp);
+	}
+}
+
+
+//RETURN IF 2 BITARRAYS ARE EQUAL
+Bool cmpBit(BitArray op1, BitArray op2, size_t op1Length, size_t op2Length)
+{	
+	if(op1Length != op2Length) // return True is are equal, False if not
+		return False;
+		
+	for(size_t i = 0; i<op1Length; ++i)
+	{
+		if(getBit(op1,i) != getBit(op2,i))
+			return False;
+	}
+	
+	return True;
+}
+
+
+//READ BITARRAY FROM STDIN
+void readBitArr(BitArray bitArray, size_t *Length, Bool autoIncrease)
+{
+	BitArray tmp = allocBit(tmp, *Length, 0, False);
+	char input = 0;
+	size_t i = 0;
+	
+	
+	while(i <= *Length){
+		input = getchar();
+		
+		if(input == '\n' || input == EOF)
+			break;
+		
+		if(autoIncrease && i == (*Length))
+		{
+			++(*Length);
+			tmp = allocBit(tmp, (*Length), *Length, True);
+		}
+		else if((!autoIncrease) && i == (*Length))
+			break;
+		
+		setBit(tmp, i, input-48);
+		
+		++i;
+	}
+	
+	invBit(bitArray, tmp, Length, *Length);
 }
 
 
@@ -315,7 +380,7 @@ void ca1Bit(BitArray destination, BitArray source, size_t *destLength, size_t so
   	size_t n_byte = ((size_t)ceil((float)sourceLength/8.0)); // number of byte
 	if(sourceLength > *destLength)
     {
-    	destination = allocBit(destination, *destLength, 0, False);
+    	destination = allocBit(destination, sourceLength, 0);
     	*destLength = sourceLength;
     }
 	
@@ -361,7 +426,7 @@ unsigned linearLogicBit(BitArray bitArray, size_t Length, LogicSign sign)
 	     	output = !output;
 	    }
 	}
-	else if(sign == Nor)
+	else if(sign == Nor) // forse sbagliata
 	{
 		for(i=1; i < Length; ++i)
 	    {
@@ -384,14 +449,6 @@ unsigned linearLogicBit(BitArray bitArray, size_t Length, LogicSign sign)
 
 
 /**************************** BASES FUNCTION *******************************/
-/*
-->in dec //1001 -> 9	DONE
-->in dec (base transcript) //1001 -> milleuno	DONE
-->from int	DONE
-->to string: in bin, in dec, in oct, in hex (base conversion) //1001 -> 9	DONE
-->from dec or floating to bitarray	DONE
-*/
-
 
 //CONVERT THE BIT ARRAY TO INT (BASE BIN TO DEC)
 long long unsigned baseExportBit(BitArray bitArray, size_t Length)
