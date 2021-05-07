@@ -6,7 +6,7 @@
 *	
 *	Copyright Visual Laser 10 New
 *
-*	Release: 1.0.0.1 - 04/2021
+*	Release: 1.0.0.1 - 05/2021
 *
 *	DESCRIPTION:
 *		library that introduce a "new" type that contains bits
