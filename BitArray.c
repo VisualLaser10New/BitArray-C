@@ -260,10 +260,6 @@ void readBitArr(BitArray bitArray, size_t *Length, Bool autoIncrease)
 
 
 /**************************** LOGICAL FUNCTION *******************************/
-/*
-	TODO: linear bitwise operations 001 & -> 0&0&1 -> 0
-*/
-
 
 //DO THE SHIFT OPERATION
 void shiftBitArr(BitArray destination, BitArray source, size_t shiftNum, size_t Length, Bool RtL)
