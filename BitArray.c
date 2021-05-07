@@ -388,53 +388,62 @@ void ca1Bit(BitArray destination, BitArray source, size_t *destLength, size_t so
 
 
 //LINEAR LOGIC OPERATIONS
-unsigned linearLogicBit(BitArray bitArray, size_t Length, LogicSign sign)
+unsigned linearLogicBit(BitArray bitArray, size_t Length, LogicSign sign, Bool Rtl)
 {
 	size_t i;
-	unsigned output = getBit(bitArray,0);
+	BitArray tmp;
+	tmp = allocBit(bitArray, Length, 0, False);
+	
+	if(Rtl)
+		cpyBit(tmp, bitArray, 0, Length);
+	else
+		invBit(tmp,bitArray,&Length,Length);
+		
+	
+	unsigned output = getBit(tmp,0);
 	
 	if(sign == And)									
 	{
 		for(i=1; i < Length; ++i)
 		{
-	     	output &= getBit(bitArray,i);
+	     	output &= getBit(tmp,i);
 		}
 	}
 	else if(sign == Or)
 	{
 		for(i=1; i < Length; ++i)
 		{
-	     	output |= getBit(bitArray,i);
+	     	output |= getBit(tmp,i);
 		}
 	}
 	else if(sign == Xor)
 	{
 		for(i=1; i < Length; ++i)
 	    {
-	     	output ^= getBit(bitArray,i);
+	     	output ^= getBit(tmp,i);
 	    }
 	}
 	else if(sign == Nand)
 	{
 		for(i=1; i < Length; ++i)
 	    {
-	     	output &= getBit(bitArray,i);
+	     	output &= getBit(tmp,i);
 	     	output = !output;
 	    }
 	}
-	else if(sign == Nor) // forse sbagliata
+	else if(sign == Nor)
 	{
 		for(i=1; i < Length; ++i)
 	    {
-	     	output |= getBit(bitArray,i);
-	     	output = !output;
+	     	output |= getBit(tmp,i);
+	     	output = !output;	     	
 	    }
 	}
 	else if(sign == Xnor)
 	{
 		for(i=1; i < Length; ++i)
 	    {
-	     	output ^= getBit(bitArray,i);
+	     	output ^= getBit(tmp,i);
 	     	output = !output;
 	    }
 	}
