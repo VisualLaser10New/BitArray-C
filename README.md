@@ -163,7 +163,7 @@ The ArrayBit indexing is Zero based, instead the BitArray length is One based.
   
   Read an input for BitArray
   
-  * `bitArray` the BitArray in wich will be inserted the input
+  * `bitArray` the BitArray in which will be inserted the input
   * `Length` is the length of the BitArray
   * `autoIncrease` you can select if it can adapt to the input of the user or have a pre-established length
 
@@ -176,12 +176,121 @@ The ArrayBit indexing is Zero based, instead the BitArray length is One based.
   
   Shift the BitArray in the selected direction (is the equivalent to the `<` or `>` operations)
   
-  * `destination` is the BitArray in wich will be inserted the result of the shift
+  * `destination` is the BitArray in which will be inserted the result of the shift
   * `source` is the BitArray that will be shifted
   * `shiftNum` is the number of positions to shift
   * `Length` is the length of the `source` BitArray
   * `RtL` is the direction of the shift (RtL if True > if False <)
 
+  ----
+
+* ### logicBit
+  ```c
+  void logicBit(BitArray op1, BitArray op2, BitArray result, size_t *op1Length,  size_t *op2Length,  size_t *resLength, LogicSign sign)
+  ```
+  
+  Execute a logic operation between two BitArray
+  
+  * `op1` first operator of the operation
+  * `op2` second operator of the operation
+  * `result` is the BitArray in which the result is copied
+  * `op1Length` is the length of `op1`
+  * `op2Length` is the length of `op2`
+  * `resLength` is the length of `result`
+  * `sign` is the name of the logic operation (And, Or, Xor, Nand, Nor, Xnor)
+
+  ----
+
+* ### ca1Bit
+  ```c
+  void ca1Bit(BitArray destination, BitArray source, size_t *destLength, size_t sourceLength)
+  ```
+  
+  Do logic CA1 of the first source array and put the result in destination
+  
+  * `destination` is the BitArray in which will be inserted the result of the CA1
+  * `source` the BitArray upon which the CA1 will be execute
+  * `destLength` this number indicate the length of destination BitArray
+  * `sourceLength` is the length of the `source` BitArray
+
+  ----
+
+* ### linearLogicBit
+  ```c
+  unsigned linearLogicBit(BitArray bitArray, size_t Length, LogicSign sign, Bool Rtl)
+  ```
+  
+  This Function make any logic operation with the bit contained in the BitArray
+  
+  * `bitArray` is the BitArray variable Type on which the logical operation will be made
+  * `Length` is the `bitArray` Length
+  * `sign` is the name of the logic operation (And, Or, Xor, Nand, Nor, Xnor)
+  * `RtL` is the direction of the logic operation flow
+
+  ----
+
+* ### baseExportBit
+  ```c
+  long long unsigned baseExportBit(BitArray bitArray, size_t Length)
+  ```
+  
+  Convert a bit number composed by BitArray in decimal base and return it
+  
+  * `bitArray` the BitArray will be converted in decimal number
+  * `Length` the BitArray's length expressed in number of bits
+  
+  ----
+
+* ### baseTranscBit
+  ```c
+  long long unsigned baseTranscBit(BitArray bitArray, size_t Length)
+  ```
+  
+  Transcript the bit from base 2 to base 10 ES: 1001(2) -> 1001(10)
+  
+  * `bitArray` the BitArray that will be transcripted
+  * `Length` the length of `bitArray`
+
+   ----
+
+* ### baseImportBit
+  ```c
+  void baseImportBit(BitArray bitArray, long long unsigned int input, size_t *Length)
+  ```
+  
+  Convert an input number in decimal base to a bitArray in binary base
+  
+  * `bitArray` is the BitArray in which set the converted number
+  * `input` is the number to convert from dec to bin
+  * `Length` is the length of the BitArray
+  
+  ----
+
+* ### charfromBit
+  ```c
+  void charfromBit (BitArray bitArray, char output[], size_t Length, BaseType base)
+  ```
+  
+  Tranform the bit BitArray in a string with chosen base
+  
+  * `bitArray` is the BitArray that will be converted
+  * `output` is the output string
+  * `Length` is the length of `bitArray`
+  * `base` is the base in which will be transformed the BitArray (Bin, Dec, Oct, Hex)
+
+   ----
+   
+* ### n32ImportBit
+  ```c
+  void n32ImportBit(BitArray bitArray, float input, size_t *Length, Bool isFloat)
+  ```
+  
+  Copy the bits of INT or FLOAT number saved in memory into a bitArray
+  
+  * `bitArray` the BitArray in which will be copy the bits
+  * `input` is the input number can be INT or FLOAT from which converted
+  * `Length` the length of bitArray
+  * `isFloat` if the input is a FLOAT set it as `True`, otherwise `False`
 
 ## Advice to use the library
 
