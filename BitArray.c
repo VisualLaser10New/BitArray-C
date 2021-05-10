@@ -506,7 +506,7 @@ void baseImportBit(BitArray bitArray, long long unsigned int input, size_t *Leng
 //TRANSOFRM THE BITARRAY TO CHAR ARRAY WITH CHOOSEN BASE (BIN, DEC, OCT, HEX)
 #define charfromBit(...) _charfromBit(__VA_ARGS__, Dec)
 #define _charfromBit(bitArray, output, Length, base, ...) charfromBit(bitArray, output, Length, base)
-unsigned (charfromBit)(BitArray bitArray, char output[], size_t Length, BaseType base)
+void (charfromBit)(BitArray bitArray, char output[], size_t Length, BaseType base)
 {
 	size_t i;
 	size_t end;
